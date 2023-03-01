@@ -7,26 +7,6 @@ from urllib.request import urlopen, Request
 import numpy as np
 import matplotlib.pyplot as plt
 
-def get_page(url):
-    uClient = urlopen(url)
-    website_text = uClient.read()
-    uClient.close()
-    soup = BeautifulSoup(website_text, "html.parser")
-    # print(soup.p)
-    containers = str(soup.find_all("div", {"class": "et_pb_text_inner"}))
-    # print(containers)
-    return containers
-
-def remove_tags(html):
-    # parse html content
-    soup = BeautifulSoup(html, "html.parser")
-    for data in soup(['style', 'script']):
-        # Remove tags
-        data.decompose()
-
-    # return data by retrieving the tag content
-    return ' '.join(soup.stripped_strings)
-
 def get_links(webpage):
     links = []
     titles = []
@@ -76,7 +56,7 @@ def getRating(url):
         rating = int(webpage[ratingIndex + 1])
     return rating
            
-file1 = open("/Users/sonajain/Desktop/Asian Movie Coding Project /text_data1.txt", "w+")
+file1 = open("/Users/sonajain/Desktop/Asian Movie Coding Project /ratings.txt", "w+")
 url = "https://mydramalist.com/dramalist/orangecoral"
 req = Request(url, headers={'User-Agent': 'Brave/5.0'})
 web_byte = urlopen(req).read()
@@ -94,14 +74,6 @@ for index in range(len(othRatings)):
     ratingDiff.append(round(myRatings[index] - othRatings[index],1))
 
 print("Rating Diff: ", ratingDiff)
-
-'''
-q25, q75 = np.percentile(ratingDiff, [25, 75])
-bin_width = 2 * (q75 - q25) * len(ratingDiff) ** (-1/3)
-bins = round((max(ratingDiff) - min(ratingDiff)) / bin_width)
-print("Freedman–Diaconis number of bins:", bins)
-plt.hist(ratingDiff, bins=bins)
-'''
 
 plt.scatter(myRatings, othRatings)
 plt.show()
